@@ -33,7 +33,7 @@ services:
             - MONGO
             
     app:
-        image: "app"
+        image: "manu785/backend_coding-challenge"
         container_name: "app-container"
         depends_on:
             - mongo
