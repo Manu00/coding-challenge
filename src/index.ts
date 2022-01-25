@@ -13,33 +13,41 @@ import { User } from "./schema/userSchema";
 import Context from "./types/context";
 import authChecker from "./utils/authChecker";
 
-
 (async () => {
-
   //build schema
   const schema = await buildSchema({
     resolvers,
-    authChecker
-  })
+    authChecker,
+  });
 
   //init express
   const app = express();
 
-  app.use(cookieParser())
+  app.use(cookieParser());
 
   //await createConnection();
 
   //create apollo server
   const apolloServer = new ApolloServer({
-    plugins: [
-      ApolloServerPluginLandingPageGraphQLPlayground({
-      })
-    ],
+    introspection: true,
     schema,
+    plugins: [
+      process.env.NODE_ENV === "production"
+        ? ApolloServerPluginLandingPageGraphQLPlayground({
+            settings: {
+              "request.credentials": "include",
+            },
+          })
+        : ApolloServerPluginLandingPageGraphQLPlayground({
+            settings: {
+              "request.credentials": "include",
+            },
+          }),
+    ],
     context: (ctx: Context) => {
       const context = ctx;
 
-      if(ctx.req.cookies.accessToken) {
+      if (ctx.req.cookies.accessToken) {
         const user = verifyJwt<User>(ctx.req.cookies.accessToken);
 
         context.user = user;
@@ -50,7 +58,7 @@ import authChecker from "./utils/authChecker";
 
   await apolloServer.start();
 
-  apolloServer.applyMiddleware({app});
+  apolloServer.applyMiddleware({ app });
 
   //start listening
   app.listen(4000, () => {
