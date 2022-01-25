@@ -17,7 +17,7 @@ COPY config ./config
 #ENV NODE_ENV=production
 RUN npm run build
 
-From node:17-alpine
+FROM node:17-alpine
 
 WORKDIR /usr/src/b42
 

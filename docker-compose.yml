@@ -1,0 +1,47 @@
+version: "3"
+services:
+    mongo:
+        image: "mongo"
+        container_name: "mongo-container"
+        environment:
+            - MONGO_INITDB_DATABASE=b42
+            - MONGO_INITDB_ROOT_USERNAME=b42
+            - MONGO_INITDB_ROOT_PASSWORD=b42
+        volumes:
+            #- ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+            #- ./mongod.conf:/etc/mongod.conf
+            - ./mongo-volume:/data/db
+        ports:
+            - "27017:27017"
+        networks:
+            - MONGO
+        
+    mongo-express:
+        image: "mongo-express"
+        container_name: "mongo-express-container"
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: b42
+            ME_CONFIG_MONGODB_ADMINPASSWORD: b42
+            ME_CONFIG_MONGODB_SERVER: mongo
+            ME_CONFIG_MONGODB_PORT: "27017"
+        depends_on:
+            - mongo
+        restart: unless-stopped
+        ports:
+            - "8081:8081"
+        networks:
+            - MONGO
+            
+    app:
+        image: "app"
+        container_name: "app-container"
+        depends_on:
+            - mongo
+        restart: unless-stopped
+        ports:
+            - "4000:4000"
+        networks:
+            - MONGO
+networks:
+    MONGO:
+        name: "MONGO"
