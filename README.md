@@ -1,7 +1,10 @@
 # B42 Backend Coding Challenge
+---
 
 Use `docker-compose up` to sart the `mongodb(27017)` `app(4000)` and `mongo-express(8081)` stack.
 
+[http://localhost:4000/graphql!]: http://localhost:4000/graphql
+*Attention you have to use  http://localhost:4000/graphql because of how the cookies work.*
 
 ### Benutzung:
 Create a user:
@@ -16,7 +19,7 @@ mutation createUser($input: CreateUserInput!) {
 
 {
   "input": {
-    "name":  "Snow",
+    "name":  "John Snow",
     "email": "john@mail.com",
     "password": "password"
   }
